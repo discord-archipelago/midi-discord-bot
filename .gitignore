@@ -1,7 +1,7 @@
 .env
 node_modules/
 
-# 런타임 상태 파일 (서버마다 달라야 함)
+# 런타임 상태 파일
 data/state.json
 
 # 임시/불필요 파일
