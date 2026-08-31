@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { getConfig, OWNER_ID } from "./utils/store.js";
 import { handleCheckin } from "./utils/checkin.js";
 import { handleProfanity } from "./utils/profanity.js";
+import { handleRegisterButton, handleRegisterModal } from "./utils/register.js";
 
 dotenv.config();
 
@@ -68,20 +69,30 @@ client.on("messageCreate", async msg => {
 });
 
 client.on("interactionCreate", async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
+  if (interaction.isChatInputCommand()) {
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
 
-  const config = getConfig();
-  if (config.ownerOnly && interaction.user.id !== OWNER_ID) {
-    return interaction.reply({ content: "지금은 오너만 명령어 사용 가능해!", ephemeral: true });
+    const config = getConfig();
+    if (config.ownerOnly && interaction.user.id !== OWNER_ID) {
+      return interaction.reply({ content: "지금은 오너만 명령어 사용 가능해!", ephemeral: true });
+    }
+
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      console.error(err);
+      await interaction.reply({ content: " 명령 실행 중 오류 발생!", ephemeral: true }).catch(() => {});
+    }
+    return;
   }
 
-  try {
-    await command.execute(interaction);
-  } catch (err) {
-    console.error(err);
-    await interaction.reply({ content: " 명령 실행 중 오류 발생!", ephemeral: true }).catch(() => {});
+  if (interaction.isButton()) {
+    return handleRegisterButton(interaction).catch(err => console.error(err));
+  }
+
+  if (interaction.isModalSubmit()) {
+    return handleRegisterModal(interaction).catch(err => console.error(err));
   }
 });
 
