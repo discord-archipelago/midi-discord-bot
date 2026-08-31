@@ -3,6 +3,9 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import { getConfig, OWNER_ID } from "./utils/store.js";
+import { handleCheckin } from "./utils/checkin.js";
+import { handleProfanity } from "./utils/profanity.js";
 
 dotenv.config();
 
@@ -40,24 +43,18 @@ const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
   }
 })();
 
-const statePath = path.join(__dirname, "data", "state.json");
-
-// data 폴더 & state.json 없으면 자동 생성
-if (!fs.existsSync(path.join(__dirname, "data"))) {
-  fs.mkdirSync(path.join(__dirname, "data"));
-}
-if (!fs.existsSync(statePath)) {
-  fs.writeFileSync(statePath, JSON.stringify({ sayEnabled: false }));
-}
-
-// 일반 메시지 SAY 기능
+// 출첵 / 욕설 카운트 / SAY 기능
 client.on("messageCreate", async msg => {
   if (msg.author.bot) return;
+  if (!msg.guild) return;
+
+  await handleCheckin(msg);
+  await handleProfanity(msg);
+
   if (!msg.content.startsWith("SAY ")) return;
 
-  // sayEnabled 읽어오기
-  const state = JSON.parse(fs.readFileSync(statePath, "utf8"));
-  if (!state.sayEnabled) return;
+  const config = getConfig();
+  if (!config.sayEnabled) return;
 
   const text = msg.content.slice(4).trim();
   if (!text) return;
@@ -74,11 +71,17 @@ client.on("interactionCreate", async interaction => {
   if (!interaction.isChatInputCommand()) return;
   const command = client.commands.get(interaction.commandName);
   if (!command) return;
+
+  const config = getConfig();
+  if (config.ownerOnly && interaction.user.id !== OWNER_ID) {
+    return interaction.reply({ content: "지금은 오너만 명령어 사용 가능해!", ephemeral: true });
+  }
+
   try {
     await command.execute(interaction);
   } catch (err) {
     console.error(err);
-    await interaction.reply({ content: " 명령 실행 중 오류 발생!", ephemeral: true });
+    await interaction.reply({ content: " 명령 실행 중 오류 발생!", ephemeral: true }).catch(() => {});
   }
 });
 
