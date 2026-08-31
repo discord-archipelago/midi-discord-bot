@@ -7,6 +7,7 @@ import { getConfig, OWNER_ID } from "./utils/store.js";
 import { handleCheckin } from "./utils/checkin.js";
 import { handleProfanity } from "./utils/profanity.js";
 import { handleRegisterButton, handleRegisterModal } from "./utils/register.js";
+import { handleSuggestionModal } from "./utils/suggest.js";
 
 dotenv.config();
 
@@ -92,6 +93,9 @@ client.on("interactionCreate", async interaction => {
   }
 
   if (interaction.isModalSubmit()) {
+    if (interaction.customId === "suggestion_modal") {
+      return handleSuggestionModal(interaction).catch(err => console.error(err));
+    }
     return handleRegisterModal(interaction).catch(err => console.error(err));
   }
 });
