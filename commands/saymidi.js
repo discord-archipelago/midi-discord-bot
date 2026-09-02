@@ -10,6 +10,7 @@ export default {
 
   async execute(interaction) {
     const message = interaction.options.getString("메시지");
+    await interaction.reply({ content: "말해줬어", ephemeral: true });
     await interaction.channel.send(message);
   },
 };
