@@ -34,7 +34,7 @@ function getSamplePath(note) {
 export default {
   data: new SlashCommandBuilder()
     .setName("midi")
-    .setDescription("미디가 피아노로 연주함 🎵")
+    .setDescription("미디가 피아노를 연주함")
     .addStringOption(option =>
       option
         .setName("notes")
@@ -62,7 +62,7 @@ export default {
     const player = createAudioPlayer();
     connection.subscribe(player);
 
-    await interaction.reply(`미디가 연주를 시작합니다! (${notesInput})`);
+    await interaction.reply(`미디가 연주를 시작합니다! (${notesInput})` || `ㅔ? 이걸 연주하라고? (${notesInput})`);
 
     const notes = notesInput.split(/[-]+/g).filter(Boolean);
 
