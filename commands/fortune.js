@@ -26,7 +26,7 @@ const FORTUNES = [
   "오늘 만나는 사람이 너한테 좋은 영향을 줄 거야.",
   "작은 일에도 운이 따라줄 거야.",
   "미뤄뒀던 일을 처리하면 마음이 한결 편해질 거야.",
-  "오늘은 지갑 단속 잘해야 할 거야, 돈 나갈 일이 생길 거야.",
+  "오늘은 지갑 단속 잘해야 해, 돈 나갈 일이 생길 거야.",
   "예상 못한 칭찬을 듣게 될 거야.",
   "오늘 하루는 유독 시간이 빨리 갈 거야.",
   "사소한 오해가 하나 풀릴 거야.",
@@ -48,6 +48,6 @@ export default {
 
   async execute(interaction) {
     const fortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-    await interaction.reply(`오늘의 운세: ${fortune}`);
+    await interaction.reply(` ${fortune}`);
   },
 };
