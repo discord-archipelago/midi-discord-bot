@@ -11,28 +11,28 @@ const ANSWERS = [
   "다시 물어봐.",
   "왜 나한테 물어봐.",
   "그럴 수도, 아닐 수도.",
-  "지금은 대답 안 함.",
-  "예스.",
-  "노.",
+  "몰라.",
+  "ㅇㅇ.",
+  "ㄴㄴ.",
   "그냥 하지 마.",
   "확실해.",
   "잘 모르겠는데.",
   "이미 답은 네 안에 있어.",
   "다음에 다시 물어봐.",
-  "안 알려줌.",
+  "안 알려줌ㅋ",
   "당연하지.",
   "절대 아니야.",
-  "흠... 아니.",
-  "오늘은 컨디션이 안 좋음.",
-  "그건 비밀이야.",
+  "흠...;; 아니.",
+  "에바임.",
+  "그건 좀 아닌거같음.",
 ];
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("소라고동")
-    .setDescription("마법의 소라고동에게 물어봄")
+    .setName("소라고둥")
+    .setDescription("마법의 소라고둥에게 물어봄")
     .addStringOption(opt =>
-      opt.setName("질문").setDescription("소라고동에게 물어볼 질문").setRequired(true)
+      opt.setName("질문").setDescription("소라고둥에게 물어볼 질문").setRequired(true)
     ),
 
   async execute(interaction) {
