@@ -19,6 +19,6 @@ export async function handleCheckin(msg) {
 
   const channel = msg.guild.channels.cache.get(config.checkinChannelId);
   if (channel) {
-    channel.send(`✅ ${msg.author} 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
+    channel.send(` ${msg.author} 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
   }
 }
