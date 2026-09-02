@@ -62,7 +62,7 @@ export default {
     const player = createAudioPlayer();
     connection.subscribe(player);
 
-    await interaction.reply(`미디가 연주를 시작합니다! (${notesInput})` || `ㅔ? 이걸 연주하라고? (${notesInput})`);
+    await interaction.reply(`미디가 연주를 시작합니다! (${notesInput})`);
 
     const notes = notesInput.split(/[-]+/g).filter(Boolean);
 
