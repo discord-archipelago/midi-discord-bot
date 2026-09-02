@@ -10,13 +10,13 @@ async function fetchFromCatApi() {
 
 async function fetchFromCataas() {
   const res = await fetch("https://cataas.com/cat?json=true");
-  if (!res.ok) throw new Error(`cataas 오류: ${res.status}`);
+  if (!res.ok) throw new Error(`cataas 오류;;; ${res.status}`);
   const data = await res.json();
   return `https://cataas.com${data.url}`;
 }
 
 export default {
-  data: new SlashCommandBuilder().setName("고양이").setDescription("랜덤 고양이 사진을 보여줌!"),
+  data: new SlashCommandBuilder().setName("고양이").setDescription("고양이 사진으로 힐링하기"),
 
   async execute(interaction) {
     await interaction.deferReply();
@@ -29,8 +29,8 @@ export default {
       const embed = new EmbedBuilder().setImage(imageUrl).setColor(0xffa500);
       await interaction.editReply({ embeds: [embed] });
     } catch (err) {
-      console.error("고양이 가져오기 실패:", err);
-      await interaction.editReply("고양이 가져오다가 오류남 ㅠ");
+      console.error("고양이 가져오기 실패;;;;", err);
+      await interaction.editReply("고양이가 튀었는데;; 저거 잡아와");
     }
   },
 };
