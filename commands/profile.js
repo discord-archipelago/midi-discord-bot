@@ -4,9 +4,9 @@ import { getUsers, getUser } from "../utils/store.js";
 export default {
   data: new SlashCommandBuilder()
     .setName("프로필")
-    .setDescription("출첵/욕설/생일 등 정보를 보여줌!")
+    .setDescription("출첵/욕설/생일 등 정보를 보여줌")
     .addUserOption(opt =>
-      opt.setName("유저").setDescription("조회할 유저 (안 넣으면 본인)").setRequired(false)
+      opt.setName("유저").setDescription("조회할 유저 (본인 기본값)").setRequired(false)
     ),
 
   async execute(interaction) {
