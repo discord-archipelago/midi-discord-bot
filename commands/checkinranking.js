@@ -25,6 +25,6 @@ export default {
       })
     );
 
-    await interaction.reply(`**📋 출첵 랭킹**\n${lines.join("\n")}`);
+    await interaction.reply(`**출첵 랭킹**\n${lines.join("\n")}`);
   },
 };
