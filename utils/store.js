@@ -63,3 +63,19 @@ export function getDungjjal() {
 export function saveDungjjal(data) {
   saveJson("dungjjal.json", data);
 }
+
+export function getExtraActivities() {
+  return loadJson("activities.json", []);
+}
+
+export function saveExtraActivities(list) {
+  saveJson("activities.json", list);
+}
+
+export function getExtraFoods() {
+  return loadJson("foods.json", []);
+}
+
+export function saveExtraFoods(list) {
+  saveJson("foods.json", list);
+}

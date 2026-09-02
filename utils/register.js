@@ -6,12 +6,24 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import { getUsers, saveUsers, getUser, getDungjjal, saveDungjjal } from "./store.js";
+import {
+  getUsers,
+  saveUsers,
+  getUser,
+  getDungjjal,
+  saveDungjjal,
+  getExtraActivities,
+  saveExtraActivities,
+  getExtraFoods,
+  saveExtraFoods,
+} from "./store.js";
 
 export function buildRegisterMenu() {
   return new ActionRowBuilder().addComponents(
     new ButtonBuilder().setCustomId("register_birthday").setLabel("생일 등록").setStyle(ButtonStyle.Primary),
-    new ButtonBuilder().setCustomId("register_dungjjal").setLabel("짤 등록").setStyle(ButtonStyle.Secondary)
+    new ButtonBuilder().setCustomId("register_dungjjal").setLabel("짤 등록").setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId("register_activity").setLabel("할거 등록").setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId("register_food").setLabel("음식 등록").setStyle(ButtonStyle.Secondary)
   );
 }
 
@@ -32,6 +44,28 @@ export async function handleRegisterButton(interaction) {
     const input = new TextInputBuilder()
       .setCustomId("dungjjal_url")
       .setLabel("이미지/gif 링크")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+    modal.addComponents(new ActionRowBuilder().addComponents(input));
+    return interaction.showModal(modal);
+  }
+
+  if (interaction.customId === "register_activity") {
+    const modal = new ModalBuilder().setCustomId("activity_modal").setTitle("할거 등록");
+    const input = new TextInputBuilder()
+      .setCustomId("activity_value")
+      .setLabel("추가할 '할거' 항목")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+    modal.addComponents(new ActionRowBuilder().addComponents(input));
+    return interaction.showModal(modal);
+  }
+
+  if (interaction.customId === "register_food") {
+    const modal = new ModalBuilder().setCustomId("food_modal").setTitle("음식 등록");
+    const input = new TextInputBuilder()
+      .setCustomId("food_value")
+      .setLabel("추가할 음식 이름")
       .setStyle(TextInputStyle.Short)
       .setRequired(true);
     modal.addComponents(new ActionRowBuilder().addComponents(input));
@@ -61,5 +95,21 @@ export async function handleRegisterModal(interaction) {
     data.images.push({ url, addedBy: interaction.user.id });
     saveDungjjal(data);
     return interaction.reply({ content: "똥짤 등록 완료!", ephemeral: true });
+  }
+
+  if (interaction.customId === "activity_modal") {
+    const value = interaction.fields.getTextInputValue("activity_value").trim();
+    const list = getExtraActivities();
+    list.push(value);
+    saveExtraActivities(list);
+    return interaction.reply({ content: `"${value}" 할거 목록에 추가함!`, ephemeral: true });
+  }
+
+  if (interaction.customId === "food_modal") {
+    const value = interaction.fields.getTextInputValue("food_value").trim();
+    const list = getExtraFoods();
+    list.push(value);
+    saveExtraFoods(list);
+    return interaction.reply({ content: `"${value}" 음식 목록에 추가함!`, ephemeral: true });
   }
 }
