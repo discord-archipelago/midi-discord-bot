@@ -35,7 +35,7 @@ export async function handleCheckin(msg) {
     }
   }
 
-  if (user.dmCheckinEnabled) {
-    msg.author.send(`${time}에 출첵 완료! (총 ${user.checkinCount}회)`).catch(() => {});
+  if (user.replyCheckinEnabled) {
+    msg.reply(`${time}에 출첵 완료! (총 ${user.checkinCount}회)`).catch(() => {});
   }
 }

@@ -51,11 +51,11 @@ export function getUser(users, userId) {
       lastCheckin: null,
       profanityCount: 0,
       birthday: null,
-      dmCheckinEnabled: true,
+      replyCheckinEnabled: false,
     };
   }
-  if (users[userId].dmCheckinEnabled === undefined) {
-    users[userId].dmCheckinEnabled = true;
+  if (users[userId].replyCheckinEnabled === undefined) {
+    users[userId].replyCheckinEnabled = false;
   }
   return users[userId];
 }

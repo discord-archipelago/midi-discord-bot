@@ -6,14 +6,17 @@ import { fileURLToPath } from "url";
 import { getConfig, OWNER_ID } from "./utils/store.js";
 import { handleCheckin } from "./utils/checkin.js";
 import { handleProfanity } from "./utils/profanity.js";
-import { handleRegisterButton, handleRegisterModal } from "./utils/register.js";
 import {
   handleSettingsButton,
   handleSettingsChannelSelect,
   handleSettingsUserSelect,
   handleSettingsModal,
 } from "./utils/settingsPanel.js";
-import { handleUserSettingsButton } from "./utils/userSettings.js";
+import {
+  handleUserSettingsButton,
+  handleUserSettingsModal,
+  handleUserSettingsSelect,
+} from "./utils/userSettings.js";
 
 dotenv.config();
 
@@ -101,7 +104,7 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId.startsWith("usersettings_")) {
       return handleUserSettingsButton(interaction).catch(err => console.error(err));
     }
-    return handleRegisterButton(interaction).catch(err => console.error(err));
+    return;
   }
 
   if (interaction.isChannelSelectMenu()) {
@@ -112,11 +115,17 @@ client.on("interactionCreate", async interaction => {
     return handleSettingsUserSelect(interaction).catch(err => console.error(err));
   }
 
+  if (interaction.isStringSelectMenu()) {
+    return handleUserSettingsSelect(interaction).catch(err => console.error(err));
+  }
+
   if (interaction.isModalSubmit()) {
     if (interaction.customId.startsWith("settings_migrate_modal:")) {
       return handleSettingsModal(interaction).catch(err => console.error(err));
     }
-    return handleRegisterModal(interaction).catch(err => console.error(err));
+    if (interaction.customId.startsWith("usersettings_")) {
+      return handleUserSettingsModal(interaction).catch(err => console.error(err));
+    }
   }
 });
 

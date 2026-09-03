@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 import { getExtraFoods } from "../utils/store.js";
 
-// 점심메뉴 목록 (/등록의 "음식 등록"으로 추가된 것도 합쳐짐)
+// 점심메뉴 목록 (/유저설정의 "음식 등록"으로 추가된 것도 합쳐짐)
 const MENUS = [
   "김치찌개", "돈까스", "짜장면", "샐러드", "라멘", "햄버거", "피자", "파스타", "비빔밥", "초밥",
   "떡볶이", "치킨", "샌드위치", "부대찌개", "칼국수", "오므라이스", "카레", "스테이크", "샤브샤브", "냉면",
@@ -21,7 +21,8 @@ export default {
   data: new SlashCommandBuilder().setName("뭐먹지").setDescription("오늘 뭐 먹을지 추천해줌!"),
 
   async execute(interaction) {
-    const pool = [...MENUS, ...getExtraFoods()];
+    const extras = getExtraFoods().map(e => (typeof e === "string" ? e : e.value));
+    const pool = [...MENUS, ...extras];
     const menu = pool[Math.floor(Math.random() * pool.length)];
     await interaction.reply(`**${menu}** 어때?`);
   },
