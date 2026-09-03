@@ -85,7 +85,7 @@ client.on("interactionCreate", async interaction => {
 
     const config = getConfig();
     if (config.ownerOnly && interaction.user.id !== OWNER_ID) {
-      return interaction.reply({ content: "지금은 오너만 명령어 사용 가능해!", ephemeral: true });
+      return interaction.reply({ content: "지금은 히원만 명령어 사용 가능해!", ephemeral: true });
     }
 
     try {
