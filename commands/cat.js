@@ -12,7 +12,7 @@ async function fetchFromCataas() {
   const res = await fetch("https://cataas.com/cat?json=true");
   if (!res.ok) throw new Error(`cataas 오류;;; ${res.status}`);
   const data = await res.json();
-  return `https://cataas.com${data.url}`;
+  return data.url;
 }
 
 export default {
