@@ -21,7 +21,7 @@ export default {
     const resultLine = note ? `# ${text}?! (${note})` : `# ${text}~`;
 
     const embed = new EmbedBuilder()
-      .setDescription(`-# 로보가 오늘의 덕담을 건넴\n\n${resultLine}`)
+      .setDescription(`-# 로보의 덕담\n\n${resultLine}`)
       .setColor(0x9b59b6);
 
     const files = [];
