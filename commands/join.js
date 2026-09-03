@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
 
 export default {
-  data: new SlashCommandBuilder().setName("join").setDescription("미디를 음챗으로 부름!"),
+  data: new SlashCommandBuilder().setName("입장").setDescription("미디를 음챗으로 부름!"),
   async execute(interaction) {
     const channel = interaction.member.voice.channel;
     if (!channel)

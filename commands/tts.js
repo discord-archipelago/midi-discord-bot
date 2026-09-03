@@ -15,7 +15,7 @@ export default {
     const message = interaction.options.getString("message");
     const connection = getVoiceConnection(interaction.guild.id);
     if (!connection)
-      return interaction.reply({ content: "먼저 `/join`으로 음성 채널에 불러줘", ephemeral: true });
+      return interaction.reply({ content: "먼저 `/입장`으로 음성 채널에 불러줘", ephemeral: true });
 
     try {
       await interaction.deferReply();

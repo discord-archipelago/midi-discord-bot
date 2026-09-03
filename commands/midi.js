@@ -33,7 +33,7 @@ function getSamplePath(note) {
 //  미디 명령어
 export default {
   data: new SlashCommandBuilder()
-    .setName("midi")
+    .setName("미디")
     .setDescription("미디가 피아노를 연주함")
     .addStringOption(option =>
       option

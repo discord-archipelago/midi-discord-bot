@@ -3,7 +3,7 @@ import { OWNER_ID } from "../utils/store.js";
 import { buildSettingsMessage } from "../utils/settingsPanel.js";
 
 export default {
-  data: new SlashCommandBuilder().setName("settings").setDescription("봇 설정 관리 (오너 전용)"),
+  data: new SlashCommandBuilder().setName("서버설정").setDescription("봇 설정 관리 (오너 전용)"),
 
   async execute(interaction) {
     if (interaction.user.id !== OWNER_ID)
