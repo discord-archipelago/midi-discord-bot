@@ -7,7 +7,7 @@ export default {
   async execute(interaction) {
     const data = getDungjjal();
     if (data.images.length === 0) {
-      return interaction.reply("아직 등록된 똥짤이 없음; /등록 으로 먼저 등록해줘.");
+      return interaction.reply("아직 등록된 짤이 없음. /등록 으로 먼저 등록해줘.");
     }
 
     const pick = data.images[Math.floor(Math.random() * data.images.length)];
