@@ -7,13 +7,13 @@ import { getConfig, OWNER_ID } from "./utils/store.js";
 import { handleCheckin } from "./utils/checkin.js";
 import { handleProfanity } from "./utils/profanity.js";
 import { handleRegisterButton, handleRegisterModal } from "./utils/register.js";
-import { handleSuggestionModal } from "./utils/suggest.js";
 import {
   handleSettingsButton,
   handleSettingsChannelSelect,
   handleSettingsUserSelect,
   handleSettingsModal,
 } from "./utils/settingsPanel.js";
+import { handleUserSettingsButton } from "./utils/userSettings.js";
 
 dotenv.config();
 
@@ -98,6 +98,9 @@ client.on("interactionCreate", async interaction => {
     if (interaction.customId.startsWith("settings_")) {
       return handleSettingsButton(interaction).catch(err => console.error(err));
     }
+    if (interaction.customId.startsWith("usersettings_")) {
+      return handleUserSettingsButton(interaction).catch(err => console.error(err));
+    }
     return handleRegisterButton(interaction).catch(err => console.error(err));
   }
 
@@ -110,9 +113,6 @@ client.on("interactionCreate", async interaction => {
   }
 
   if (interaction.isModalSubmit()) {
-    if (interaction.customId === "suggestion_modal") {
-      return handleSuggestionModal(interaction).catch(err => console.error(err));
-    }
     if (interaction.customId.startsWith("settings_migrate_modal:")) {
       return handleSettingsModal(interaction).catch(err => console.error(err));
     }

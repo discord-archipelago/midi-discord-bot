@@ -25,12 +25,17 @@ export async function handleCheckin(msg) {
   user.lastCheckin = today;
   saveUsers(users);
 
+  const time = formatCheckinTime(new Date());
   const config = getConfig();
-  if (!config.checkinChannelId) return;
 
-  const channel = msg.guild.channels.cache.get(config.checkinChannelId);
-  if (channel) {
-    const time = formatCheckinTime(new Date());
-    channel.send(`${msg.author} ${time}에 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
+  if (config.checkinChannelId) {
+    const channel = msg.guild.channels.cache.get(config.checkinChannelId);
+    if (channel) {
+      channel.send(`${msg.author} ${time}에 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
+    }
+  }
+
+  if (user.dmCheckinEnabled) {
+    msg.author.send(`${time}에 출첵 완료! (총 ${user.checkinCount}회)`).catch(() => {});
   }
 }

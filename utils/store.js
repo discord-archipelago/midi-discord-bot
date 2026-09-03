@@ -51,7 +51,11 @@ export function getUser(users, userId) {
       lastCheckin: null,
       profanityCount: 0,
       birthday: null,
+      dmCheckinEnabled: true,
     };
+  }
+  if (users[userId].dmCheckinEnabled === undefined) {
+    users[userId].dmCheckinEnabled = true;
   }
   return users[userId];
 }
