@@ -52,10 +52,14 @@ export function getUser(users, userId) {
       profanityCount: 0,
       birthday: null,
       replyCheckinEnabled: false,
+      mentionOnCheckin: true,
     };
   }
   if (users[userId].replyCheckinEnabled === undefined) {
     users[userId].replyCheckinEnabled = false;
+  }
+  if (users[userId].mentionOnCheckin === undefined) {
+    users[userId].mentionOnCheckin = true;
   }
   return users[userId];
 }

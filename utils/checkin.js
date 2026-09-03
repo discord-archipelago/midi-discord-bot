@@ -31,7 +31,8 @@ export async function handleCheckin(msg) {
   if (config.checkinChannelId) {
     const channel = msg.guild.channels.cache.get(config.checkinChannelId);
     if (channel) {
-      channel.send(`${msg.author} ${time}에 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
+      const userLabel = user.mentionOnCheckin ? `${msg.author}` : `\`${msg.author.username}\``;
+      channel.send(`${userLabel} ${time}에 출첵! (총 ${user.checkinCount}회)`).catch(() => {});
     }
   }
 

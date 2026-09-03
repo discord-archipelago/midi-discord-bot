@@ -46,6 +46,7 @@ export function buildUserSettingsMessage(userId) {
     .addFields(
       { name: "생일", value: user.birthday || "미등록", inline: true },
       { name: "출첵 답장 알림", value: user.replyCheckinEnabled ? "켜짐" : "꺼짐", inline: true },
+      { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: true },
       { name: "등록한 짤", value: `${myDungjjal.length}개`, inline: true },
       { name: "등록한 할거", value: `${myActivities.length}개`, inline: true },
       { name: "등록한 음식", value: `${myFoods.length}개`, inline: true }
@@ -76,6 +77,10 @@ export function buildUserSettingsMessage(userId) {
         .setCustomId("usersettings_toggle_reply")
         .setLabel(user.replyCheckinEnabled ? "출첵 답장 끄기" : "출첵 답장 켜기")
         .setStyle(user.replyCheckinEnabled ? ButtonStyle.Success : ButtonStyle.Secondary),
+      new ButtonBuilder()
+        .setCustomId("usersettings_toggle_mention")
+        .setLabel(user.mentionOnCheckin ? "출첵 멘션 끄기" : "출첵 멘션 켜기")
+        .setStyle(user.mentionOnCheckin ? ButtonStyle.Success : ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId("usersettings_delete_birthday")
         .setLabel("생일 삭제")
@@ -176,6 +181,14 @@ export async function handleUserSettingsButton(interaction) {
     const users = getUsers();
     const user = getUser(users, interaction.user.id);
     user.replyCheckinEnabled = !user.replyCheckinEnabled;
+    saveUsers(users);
+    return interaction.update(buildUserSettingsMessage(interaction.user.id));
+  }
+
+  if (customId === "usersettings_toggle_mention") {
+    const users = getUsers();
+    const user = getUser(users, interaction.user.id);
+    user.mentionOnCheckin = !user.mentionOnCheckin;
     saveUsers(users);
     return interaction.update(buildUserSettingsMessage(interaction.user.id));
   }
