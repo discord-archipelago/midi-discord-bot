@@ -140,7 +140,7 @@ export async function handleUserSettingsButton(interaction) {
   }
 
   if (customId === "usersettings_register_dungjjal") {
-    const modal = new ModalBuilder().setCustomId("usersettings_dungjjal_modal").setTitle("똥짤 등록");
+    const modal = new ModalBuilder().setCustomId("usersettings_dungjjal_modal").setTitle("짤 등록");
     const input = new TextInputBuilder()
       .setCustomId("dungjjal_url")
       .setLabel("이미지/gif 링크")
