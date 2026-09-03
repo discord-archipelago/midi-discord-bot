@@ -56,6 +56,14 @@ export function getUser(users, userId) {
   return users[userId];
 }
 
+export function resetAllCheckinTimes() {
+  const users = getUsers();
+  for (const user of Object.values(users)) {
+    user.lastCheckin = null;
+  }
+  saveUsers(users);
+}
+
 export function getDungjjal() {
   return loadJson("dungjjal.json", { images: [] });
 }

@@ -10,7 +10,14 @@ import {
   TextInputStyle,
   EmbedBuilder,
 } from "discord.js";
-import { getConfig, saveConfig, getUsers, saveUsers, getUser } from "./store.js";
+import {
+  getConfig,
+  saveConfig,
+  getUsers,
+  saveUsers,
+  getUser,
+  resetAllCheckinTimes,
+} from "./store.js";
 
 export function buildSettingsMessage() {
   const config = getConfig();
@@ -56,7 +63,11 @@ export function buildSettingsMessage() {
     new ButtonBuilder()
       .setCustomId("settings_pick_migrate_user")
       .setLabel("출첵 마이그레이션")
-      .setStyle(ButtonStyle.Secondary)
+      .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+      .setCustomId("settings_reset_checkintime")
+      .setLabel("출첵 시간 초기화")
+      .setStyle(ButtonStyle.Danger)
   );
 
   return { content: "", embeds: [embed], components: [row1, row2] };
@@ -104,6 +115,12 @@ export async function handleSettingsButton(interaction) {
         .setPlaceholder("출첵 횟수를 바꿀 유저 선택")
     );
     return interaction.update({ content: "출첵 횟수를 바꿀 유저를 골라줘.", embeds: [], components: [row] });
+  }
+
+  if (interaction.customId === "settings_reset_checkintime") {
+    resetAllCheckinTimes();
+    await interaction.update(buildSettingsMessage());
+    return interaction.followUp({ content: "출첵 시간 초기화함! 이제 다들 다시 출첵할 수 있어.", ephemeral: true });
   }
 }
 
