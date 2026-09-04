@@ -14,7 +14,13 @@ function loadJson(fileName, defaultValue) {
     fs.writeFileSync(filePath, JSON.stringify(defaultValue, null, 2));
     return JSON.parse(JSON.stringify(defaultValue));
   }
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (err) {
+    console.error(`${fileName} 파싱 실패, 기본값으로 복구함:`, err.message);
+    fs.writeFileSync(filePath, JSON.stringify(defaultValue, null, 2));
+    return JSON.parse(JSON.stringify(defaultValue));
+  }
 }
 
 function saveJson(fileName, data) {
