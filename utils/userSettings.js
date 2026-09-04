@@ -46,7 +46,7 @@ export function buildUserSettingsMessage(userId) {
     .addFields(
       { name: "생일", value: user.birthday || "미등록", inline: true },
       { name: "출첵 답장 알림", value: user.replyCheckinEnabled ? "켜짐" : "꺼짐", inline: true },
-      { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: true },
+      { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: false },
       { name: "등록한 짤", value: `${myDungjjal.length}개`, inline: true },
       { name: "등록한 할거", value: `${myActivities.length}개`, inline: true },
       { name: "등록한 음식", value: `${myFoods.length}개`, inline: true }
@@ -285,3 +285,4 @@ export async function handleUserSettingsSelect(interaction) {
     return interaction.update(buildUserSettingsMessage(interaction.user.id));
   }
 }
+
