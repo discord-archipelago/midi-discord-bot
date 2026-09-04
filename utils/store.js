@@ -26,6 +26,7 @@ const defaultConfig = {
   ownerOnly: false,
   checkinChannelId: null,
   birthdayChannelId: null,
+  lastBirthdayCheck: null,
 };
 
 export function getConfig() {

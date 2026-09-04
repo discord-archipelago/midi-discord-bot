@@ -17,6 +17,7 @@ import {
   handleUserSettingsModal,
   handleUserSettingsSelect,
 } from "./utils/userSettings.js";
+import { checkBirthdays } from "./utils/birthday.js";
 
 dotenv.config();
 
@@ -131,6 +132,10 @@ client.on("interactionCreate", async interaction => {
 
 client.once("clientReady", () => {
   console.log(` 로그인 완료! ${client.user.tag}`);
+  checkBirthdays(client).catch(err => console.error("생일 체크 오류:", err));
+  setInterval(() => {
+    checkBirthdays(client).catch(err => console.error("생일 체크 오류:", err));
+  }, 60 * 60 * 1000);
 });
 
 client.login(process.env.TOKEN);

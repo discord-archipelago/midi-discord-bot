@@ -6,11 +6,11 @@ export default {
     .setName("프로필")
     .setDescription("출첵/욕설/생일 등 정보를 보여줌")
     .addUserOption(opt =>
-      opt.setName("유저").setDescription("조회할 유저 (본인 기본값)").setRequired(false)
+      opt.setName("대상").setDescription("조회할 유저 (본인 기본값)").setRequired(false)
     ),
 
   async execute(interaction) {
-    const target = interaction.options.getUser("유저") || interaction.user;
+    const target = interaction.options.getUser("대상") || interaction.user;
     const users = getUsers();
     const data = getUser(users, target.id);
 
