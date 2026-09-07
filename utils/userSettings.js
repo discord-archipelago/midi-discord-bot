@@ -174,12 +174,12 @@ export async function handleUserSettingsButton(interaction) {
     const modal = new ModalBuilder().setCustomId("usersettings_tmi_modal").setTitle("TMI 등록");
     const keywordInput = new TextInputBuilder()
       .setCustomId("tmi_keyword")
-      .setLabel("키워드 (이 말을 정확히 치면 반응함)")
+      .setLabel("등록할 단어")
       .setStyle(TextInputStyle.Short)
       .setRequired(true);
     const responseInput = new TextInputBuilder()
       .setCustomId("tmi_response")
-      .setLabel("응답 (봇이 말할 내용)")
+      .setLabel("답변 내용")
       .setStyle(TextInputStyle.Paragraph)
       .setRequired(true);
     modal.addComponents(
