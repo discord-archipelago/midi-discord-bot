@@ -18,6 +18,8 @@ import {
   saveExtraActivities,
   getExtraFoods,
   saveExtraFoods,
+  getTmiList,
+  saveTmiList,
 } from "./store.js";
 
 function normalizeEntry(entry) {
@@ -41,15 +43,19 @@ export function buildUserSettingsMessage(userId) {
   const foods = getExtraFoods().map(normalizeEntry);
   const myFoods = foods.filter(f => f.addedBy === userId);
 
+  const tmiList = getTmiList();
+  const myTmi = tmiList.filter(t => t.addedBy === userId);
+
   const embed = new EmbedBuilder()
     .setTitle("내 설정")
     .addFields(
       { name: "생일", value: user.birthday || "미등록", inline: true },
       { name: "출첵 답장 알림", value: user.replyCheckinEnabled ? "켜짐" : "꺼짐", inline: true },
-      { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: false },
+      { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: true },
       { name: "등록한 짤", value: `${myDungjjal.length}개`, inline: true },
       { name: "등록한 할거", value: `${myActivities.length}개`, inline: true },
-      { name: "등록한 음식", value: `${myFoods.length}개`, inline: true }
+      { name: "등록한 음식", value: `${myFoods.length}개`, inline: true },
+      { name: "등록한 TMI", value: `${myTmi.length}개`, inline: true }
     )
     .setColor(0x5865f2);
 
@@ -70,6 +76,10 @@ export function buildUserSettingsMessage(userId) {
       new ButtonBuilder()
         .setCustomId("usersettings_register_food")
         .setLabel("음식 등록")
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId("usersettings_register_tmi")
+        .setLabel("TMI 등록")
         .setStyle(ButtonStyle.Primary)
     ),
     new ActionRowBuilder().addComponents(
@@ -89,40 +99,23 @@ export function buildUserSettingsMessage(userId) {
     ),
   ];
 
-  if (myDungjjal.length > 0) {
-    rows.push(
-      new ActionRowBuilder().addComponents(
-        new StringSelectMenuBuilder()
-          .setCustomId("usersettings_delete_dungjjal")
-          .setPlaceholder("삭제할 짤 선택")
-          .addOptions(
-            myDungjjal.slice(0, 25).map(img => ({
-              label: truncate(img.url),
-              value: String(dungjjal.images.indexOf(img)),
-            }))
-          )
-      )
-    );
-  }
+  const deleteOptions = [
+    ...myDungjjal.map(img => ({
+      label: `[짤] ${truncate(img.url, 80)}`,
+      value: `dungjjal:${dungjjal.images.indexOf(img)}`,
+    })),
+    ...myActivities.map(a => ({ label: `[할거] ${truncate(a.value, 80)}`, value: `activity:${a.value}` })),
+    ...myFoods.map(f => ({ label: `[음식] ${truncate(f.value, 80)}`, value: `food:${f.value}` })),
+    ...myTmi.map(t => ({ label: `[TMI] ${truncate(t.keyword, 80)}`, value: `tmi:${t.keyword}` })),
+  ];
 
-  if (myActivities.length > 0) {
+  if (deleteOptions.length > 0) {
     rows.push(
       new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
-          .setCustomId("usersettings_delete_activity")
-          .setPlaceholder("삭제할 할거 선택")
-          .addOptions(myActivities.slice(0, 25).map(a => ({ label: truncate(a.value), value: a.value })))
-      )
-    );
-  }
-
-  if (myFoods.length > 0) {
-    rows.push(
-      new ActionRowBuilder().addComponents(
-        new StringSelectMenuBuilder()
-          .setCustomId("usersettings_delete_food")
-          .setPlaceholder("삭제할 음식 선택")
-          .addOptions(myFoods.slice(0, 25).map(f => ({ label: truncate(f.value), value: f.value })))
+          .setCustomId("usersettings_delete_entry")
+          .setPlaceholder("삭제할 항목 선택 (짤/할거/음식/TMI)")
+          .addOptions(deleteOptions.slice(0, 25))
       )
     );
   }
@@ -174,6 +167,25 @@ export async function handleUserSettingsButton(interaction) {
       .setStyle(TextInputStyle.Short)
       .setRequired(true);
     modal.addComponents(new ActionRowBuilder().addComponents(input));
+    return interaction.showModal(modal);
+  }
+
+  if (customId === "usersettings_register_tmi") {
+    const modal = new ModalBuilder().setCustomId("usersettings_tmi_modal").setTitle("TMI 등록");
+    const keywordInput = new TextInputBuilder()
+      .setCustomId("tmi_keyword")
+      .setLabel("키워드 (이 말을 정확히 치면 반응함)")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+    const responseInput = new TextInputBuilder()
+      .setCustomId("tmi_response")
+      .setLabel("응답 (봇이 말할 내용)")
+      .setStyle(TextInputStyle.Paragraph)
+      .setRequired(true);
+    modal.addComponents(
+      new ActionRowBuilder().addComponents(keywordInput),
+      new ActionRowBuilder().addComponents(responseInput)
+    );
     return interaction.showModal(modal);
   }
 
@@ -243,46 +255,63 @@ export async function handleUserSettingsModal(interaction) {
     saveExtraFoods(list);
     return interaction.update(buildUserSettingsMessage(interaction.user.id));
   }
+
+  if (customId === "usersettings_tmi_modal") {
+    const keyword = interaction.fields.getTextInputValue("tmi_keyword").trim();
+    const response = interaction.fields.getTextInputValue("tmi_response").trim();
+    if (!keyword || !response) {
+      return interaction.reply({ content: "키워드랑 응답 둘 다 입력해줘!", ephemeral: true });
+    }
+    const list = getTmiList();
+    list.push({ keyword, response, addedBy: interaction.user.id });
+    saveTmiList(list);
+    return interaction.update(buildUserSettingsMessage(interaction.user.id));
+  }
 }
 
 export async function handleUserSettingsSelect(interaction) {
-  const { customId } = interaction;
-  const selected = interaction.values[0];
+  if (interaction.customId !== "usersettings_delete_entry") return;
 
-  if (customId === "usersettings_delete_dungjjal") {
+  const raw = interaction.values[0];
+  const separatorIndex = raw.indexOf(":");
+  const category = raw.slice(0, separatorIndex);
+  const identifier = raw.slice(separatorIndex + 1);
+
+  if (category === "dungjjal") {
     const data = getDungjjal();
-    const index = Number(selected);
+    const index = Number(identifier);
     if (data.images[index] && data.images[index].addedBy === interaction.user.id) {
       data.images.splice(index, 1);
       saveDungjjal(data);
     }
-    return interaction.update(buildUserSettingsMessage(interaction.user.id));
-  }
-
-  if (customId === "usersettings_delete_activity") {
+  } else if (category === "activity") {
     const list = getExtraActivities();
     const idx = list.findIndex(e => {
       const n = normalizeEntry(e);
-      return n.value === selected && n.addedBy === interaction.user.id;
+      return n.value === identifier && n.addedBy === interaction.user.id;
     });
     if (idx !== -1) {
       list.splice(idx, 1);
       saveExtraActivities(list);
     }
-    return interaction.update(buildUserSettingsMessage(interaction.user.id));
-  }
-
-  if (customId === "usersettings_delete_food") {
+  } else if (category === "food") {
     const list = getExtraFoods();
     const idx = list.findIndex(e => {
       const n = normalizeEntry(e);
-      return n.value === selected && n.addedBy === interaction.user.id;
+      return n.value === identifier && n.addedBy === interaction.user.id;
     });
     if (idx !== -1) {
       list.splice(idx, 1);
       saveExtraFoods(list);
     }
-    return interaction.update(buildUserSettingsMessage(interaction.user.id));
+  } else if (category === "tmi") {
+    const list = getTmiList();
+    const idx = list.findIndex(t => t.keyword === identifier && t.addedBy === interaction.user.id);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+      saveTmiList(list);
+    }
   }
-}
 
+  return interaction.update(buildUserSettingsMessage(interaction.user.id));
+}
