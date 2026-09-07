@@ -33,6 +33,7 @@ const defaultConfig = {
   checkinChannelId: null,
   birthdayChannelId: null,
   lastBirthdayCheck: null,
+  tmiChannelId: null,
 };
 
 export function getConfig() {
@@ -57,6 +58,7 @@ export function getUser(users, userId) {
       checkinCount: 0,
       lastCheckin: null,
       profanityCount: 0,
+      warningCount: 0,
       birthday: null,
       replyCheckinEnabled: false,
       mentionOnCheckin: true,
@@ -68,6 +70,9 @@ export function getUser(users, userId) {
   if (users[userId].mentionOnCheckin === undefined) {
     users[userId].mentionOnCheckin = true;
   }
+  if (users[userId].warningCount === undefined) {
+    users[userId].warningCount = 0;
+  }
   return users[userId];
 }
 
@@ -75,6 +80,14 @@ export function resetAllCheckinTimes() {
   const users = getUsers();
   for (const user of Object.values(users)) {
     user.lastCheckin = null;
+  }
+  saveUsers(users);
+}
+
+export function resetAllProfanityCounts() {
+  const users = getUsers();
+  for (const user of Object.values(users)) {
+    user.profanityCount = 0;
   }
   saveUsers(users);
 }
@@ -101,4 +114,12 @@ export function getExtraFoods() {
 
 export function saveExtraFoods(list) {
   saveJson("foods.json", list);
+}
+
+export function getTmiList() {
+  return loadJson("tmi.json", []);
+}
+
+export function saveTmiList(list) {
+  saveJson("tmi.json", list);
 }
