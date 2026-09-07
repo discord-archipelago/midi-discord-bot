@@ -19,6 +19,7 @@ import {
   handleUserSettingsSelect,
 } from "./utils/userSettings.js";
 import { checkBirthdays } from "./utils/birthday.js";
+import { handleCheckinRankingButton } from "./utils/checkinRanking.js";
 
 dotenv.config();
 
@@ -106,6 +107,9 @@ client.on("interactionCreate", async interaction => {
     }
     if (interaction.customId.startsWith("usersettings_")) {
       return handleUserSettingsButton(interaction).catch(err => console.error(err));
+    }
+    if (interaction.customId.startsWith("checkinranking_page:")) {
+      return handleCheckinRankingButton(interaction).catch(err => console.error(err));
     }
     return;
   }
