@@ -8,9 +8,16 @@ export default {
   data: new SlashCommandBuilder().setName("할거추천").setDescription("할게 없다고? 내가 추천해줄게!"),
 
   async execute(interaction) {
-    const extras = getExtraActivities().map(e => (typeof e === "string" ? e : e.value));
-    const pool = [...ACTIVITIES, ...extras];
-    const activity = pool[Math.floor(Math.random() * pool.length)];
-    await interaction.reply(`**${activity}**는(은) 어때?`);
+    const extras = getExtraActivities().map(e => (typeof e === "string" ? { value: e, addedBy: null } : e));
+    const pool = [...ACTIVITIES.map(value => ({ value, addedBy: null })), ...extras];
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+
+    let content = `**${pick.value}**는(은) 어때?`;
+    if (pick.addedBy) {
+      const user = await interaction.client.users.fetch(pick.addedBy).catch(() => null);
+      if (user) content += `\n-# ${user.username}이 추천해줬어!`;
+    }
+
+    await interaction.reply(content);
   },
 };

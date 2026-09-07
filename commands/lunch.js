@@ -21,10 +21,17 @@ export default {
   data: new SlashCommandBuilder().setName("뭐먹지").setDescription("오늘 뭐 먹을지 추천해줌!"),
 
   async execute(interaction) {
-    const extras = getExtraFoods().map(e => (typeof e === "string" ? e : e.value));
-    const pool = [...MENUS, ...extras];
-    const menu = pool[Math.floor(Math.random() * pool.length)];
-    await interaction.reply(`**${menu}** 어때?`);
+    const extras = getExtraFoods().map(e => (typeof e === "string" ? { value: e, addedBy: null } : e));
+    const pool = [...MENUS.map(value => ({ value, addedBy: null })), ...extras];
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+
+    let content = `**${pick.value}** 어때?`;
+    if (pick.addedBy) {
+      const user = await interaction.client.users.fetch(pick.addedBy).catch(() => null);
+      if (user) content += `\n-# ${user.username}이 추천해줬어!`;
+    }
+
+    await interaction.reply(content);
   },
 };
 
