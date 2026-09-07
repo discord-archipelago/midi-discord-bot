@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { getConfig, OWNER_ID } from "./utils/store.js";
 import { handleCheckin } from "./utils/checkin.js";
 import { handleProfanity } from "./utils/profanity.js";
+import { handleTmi } from "./utils/tmi.js";
 import {
   handleSettingsButton,
   handleSettingsChannelSelect,
@@ -62,6 +63,7 @@ client.on("messageCreate", async msg => {
 
   await handleCheckin(msg);
   await handleProfanity(msg);
+  await handleTmi(msg);
 
   if (!msg.content.startsWith("SAY ")) return;
 
@@ -121,7 +123,7 @@ client.on("interactionCreate", async interaction => {
   }
 
   if (interaction.isModalSubmit()) {
-    if (interaction.customId.startsWith("settings_migrate_modal:")) {
+    if (interaction.customId.startsWith("settings_migrate")) {
       return handleSettingsModal(interaction).catch(err => console.error(err));
     }
     if (interaction.customId.startsWith("usersettings_")) {
