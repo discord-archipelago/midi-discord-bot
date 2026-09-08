@@ -1,7 +1,7 @@
 import { getConfig, getUsers, saveUsers, getUser } from "./store.js";
 
 function todayString() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
 }
 
 function formatCheckinTime(date) {
