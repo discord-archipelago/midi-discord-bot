@@ -263,6 +263,9 @@ export async function handleUserSettingsModal(interaction) {
       return interaction.reply({ content: "키워드랑 응답 둘 다 입력해줘!", ephemeral: true });
     }
     const list = getTmiList();
+    if (list.some(t => t.keyword === keyword)) {
+      return interaction.reply({ content: "이미 등록된 단어야!", ephemeral: true });
+    }
     list.push({ keyword, response, addedBy: interaction.user.id });
     saveTmiList(list);
     return interaction.update(buildUserSettingsMessage(interaction.user.id));
