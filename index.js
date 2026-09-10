@@ -21,6 +21,7 @@ import {
 import { checkBirthdays } from "./utils/birthday.js";
 import { handleCheckinRankingButton } from "./utils/checkinRanking.js";
 import { handleWarningListButton } from "./utils/warningList.js";
+import { handleMediaDownloadButton, handleMediaConvertButton } from "./utils/mediaButtons.js";
 
 dotenv.config();
 
@@ -84,7 +85,7 @@ client.on("messageCreate", async msg => {
 });
 
 client.on("interactionCreate", async interaction => {
-  if (interaction.isChatInputCommand()) {
+  if (interaction.isChatInputCommand() || interaction.isMessageContextMenuCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
 
@@ -114,6 +115,12 @@ client.on("interactionCreate", async interaction => {
     }
     if (interaction.customId.startsWith("serverinfo_page:")) {
       return handleWarningListButton(interaction).catch(err => console.error(err));
+    }
+    if (interaction.customId.startsWith("mediatools_dl:")) {
+      return handleMediaDownloadButton(interaction).catch(err => console.error(err));
+    }
+    if (interaction.customId.startsWith("mediatools_conv:")) {
+      return handleMediaConvertButton(interaction).catch(err => console.error(err));
     }
     return;
   }
