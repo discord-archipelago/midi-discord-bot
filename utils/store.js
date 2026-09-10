@@ -92,14 +92,6 @@ export function resetAllProfanityCounts() {
   saveUsers(users);
 }
 
-export function getDungjjal() {
-  return loadJson("dungjjal.json", { images: [] });
-}
-
-export function saveDungjjal(data) {
-  saveJson("dungjjal.json", data);
-}
-
 export function getExtraActivities() {
   return loadJson("activities.json", []);
 }

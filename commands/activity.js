@@ -5,7 +5,7 @@ import { getExtraActivities } from "../utils/store.js";
 const ACTIVITIES = ["산책하기", "낮잠 자기", "게임하기", "청소하기", "요리하기", "음악 듣기", "그림 그리기", "공부하기", "디코 끄기"];
 
 export default {
-  data: new SlashCommandBuilder().setName("할거추천").setDescription("할게 없다고? 내가 추천해줄게!"),
+  data: new SlashCommandBuilder().setName("뭐하지").setDescription("할게 없다고? 내가 추천해줄게!"),
 
   async execute(interaction) {
     const extras = getExtraActivities().map(e => (typeof e === "string" ? { value: e, addedBy: null } : e));

@@ -12,8 +12,6 @@ import {
   getUsers,
   saveUsers,
   getUser,
-  getDungjjal,
-  saveDungjjal,
   getExtraActivities,
   saveExtraActivities,
   getExtraFoods,
@@ -34,9 +32,6 @@ export function buildUserSettingsMessage(userId) {
   const users = getUsers();
   const user = getUser(users, userId);
 
-  const dungjjal = getDungjjal();
-  const myDungjjal = dungjjal.images.filter(img => img.addedBy === userId);
-
   const activities = getExtraActivities().map(normalizeEntry);
   const myActivities = activities.filter(a => a.addedBy === userId);
 
@@ -52,7 +47,6 @@ export function buildUserSettingsMessage(userId) {
       { name: "생일", value: user.birthday || "미등록", inline: true },
       { name: "출첵 답장 알림", value: user.replyCheckinEnabled ? "켜짐" : "꺼짐", inline: true },
       { name: "출첵 멘션", value: user.mentionOnCheckin ? "켜짐" : "꺼짐", inline: true },
-      { name: "등록한 짤", value: `${myDungjjal.length}개`, inline: true },
       { name: "등록한 할거", value: `${myActivities.length}개`, inline: true },
       { name: "등록한 음식", value: `${myFoods.length}개`, inline: true },
       { name: "등록한 TMI", value: `${myTmi.length}개`, inline: true }
@@ -64,10 +58,6 @@ export function buildUserSettingsMessage(userId) {
       new ButtonBuilder()
         .setCustomId("usersettings_register_birthday")
         .setLabel("생일 등록/수정")
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId("usersettings_register_dungjjal")
-        .setLabel("짤 등록")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId("usersettings_register_activity")
@@ -100,10 +90,6 @@ export function buildUserSettingsMessage(userId) {
   ];
 
   const deleteOptions = [
-    ...myDungjjal.map(img => ({
-      label: `[짤] ${truncate(img.url, 80)}`,
-      value: `dungjjal:${dungjjal.images.indexOf(img)}`,
-    })),
     ...myActivities.map(a => ({ label: `[할거] ${truncate(a.value, 80)}`, value: `activity:${a.value}` })),
     ...myFoods.map(f => ({ label: `[음식] ${truncate(f.value, 80)}`, value: `food:${f.value}` })),
     ...myTmi.map(t => ({ label: `[TMI] ${truncate(t.keyword, 80)}`, value: `tmi:${t.keyword}` })),
@@ -114,7 +100,7 @@ export function buildUserSettingsMessage(userId) {
       new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
           .setCustomId("usersettings_delete_entry")
-          .setPlaceholder("삭제할 항목 선택 (짤/할거/음식/TMI)")
+          .setPlaceholder("삭제할 항목 선택 (할거/음식/TMI)")
           .addOptions(deleteOptions.slice(0, 25))
       )
     );
@@ -131,17 +117,6 @@ export async function handleUserSettingsButton(interaction) {
     const input = new TextInputBuilder()
       .setCustomId("birthday_value")
       .setLabel("생일 (MM-DD 형식, 예: 03-14)")
-      .setStyle(TextInputStyle.Short)
-      .setRequired(true);
-    modal.addComponents(new ActionRowBuilder().addComponents(input));
-    return interaction.showModal(modal);
-  }
-
-  if (customId === "usersettings_register_dungjjal") {
-    const modal = new ModalBuilder().setCustomId("usersettings_dungjjal_modal").setTitle("짤 등록");
-    const input = new TextInputBuilder()
-      .setCustomId("dungjjal_url")
-      .setLabel("이미지/gif 링크")
       .setStyle(TextInputStyle.Short)
       .setRequired(true);
     modal.addComponents(new ActionRowBuilder().addComponents(input));
@@ -229,17 +204,6 @@ export async function handleUserSettingsModal(interaction) {
     return interaction.update(buildUserSettingsMessage(interaction.user.id));
   }
 
-  if (customId === "usersettings_dungjjal_modal") {
-    const url = interaction.fields.getTextInputValue("dungjjal_url").trim();
-    if (!/^https?:\/\//i.test(url)) {
-      return interaction.reply({ content: "http(s):// 로 시작하는 링크를 입력해줘!", ephemeral: true });
-    }
-    const data = getDungjjal();
-    data.images.push({ url, addedBy: interaction.user.id });
-    saveDungjjal(data);
-    return interaction.update(buildUserSettingsMessage(interaction.user.id));
-  }
-
   if (customId === "usersettings_activity_modal") {
     const value = interaction.fields.getTextInputValue("activity_value").trim();
     const list = getExtraActivities();
@@ -280,14 +244,7 @@ export async function handleUserSettingsSelect(interaction) {
   const category = raw.slice(0, separatorIndex);
   const identifier = raw.slice(separatorIndex + 1);
 
-  if (category === "dungjjal") {
-    const data = getDungjjal();
-    const index = Number(identifier);
-    if (data.images[index] && data.images[index].addedBy === interaction.user.id) {
-      data.images.splice(index, 1);
-      saveDungjjal(data);
-    }
-  } else if (category === "activity") {
+  if (category === "activity") {
     const list = getExtraActivities();
     const idx = list.findIndex(e => {
       const n = normalizeEntry(e);
