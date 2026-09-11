@@ -10,7 +10,10 @@ import path from "path";
 const IMAGE_EXTS = [".png", ".jpg", ".jpeg", ".webp"];
 
 export default {
-  data: new ContextMenuCommandBuilder().setName("미디 변환").setType(ApplicationCommandType.Message),
+  data: new ContextMenuCommandBuilder()
+    .setName("convert")
+    .setNameLocalizations({ ko: "미디 변환" })
+    .setType(ApplicationCommandType.Message),
 
   async execute(interaction) {
     const message = interaction.targetMessage;

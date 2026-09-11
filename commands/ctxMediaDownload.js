@@ -8,7 +8,10 @@ import {
 import { extractUrl, detectSite } from "../utils/mediaTools.js";
 
 export default {
-  data: new ContextMenuCommandBuilder().setName("미디 다운로드").setType(ApplicationCommandType.Message),
+  data: new ContextMenuCommandBuilder()
+    .setName("download")
+    .setNameLocalizations({ ko: "미디 다운로드" })
+    .setType(ApplicationCommandType.Message),
 
   async execute(interaction) {
     const message = interaction.targetMessage;
