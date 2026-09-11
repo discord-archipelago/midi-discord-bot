@@ -12,7 +12,7 @@ const IMAGE_EXTS = [".png", ".jpg", ".jpeg", ".webp"];
 export default {
   data: new ContextMenuCommandBuilder()
     .setName("convert")
-    .setNameLocalizations({ ko: "미디 변환" })
+    .setNameLocalizations({ ko: "변환" })
     .setType(ApplicationCommandType.Message),
 
   async execute(interaction) {
