@@ -28,7 +28,7 @@ async function sendFile(interaction, filePath, filename) {
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("미디변환")
+    .setName("변환")
     .setDescription("링크 다운로드 또는 파일 변환 (mp3/mp4/gif)")
     .addStringOption(opt => opt.setName("url").setDescription("유튜브/트위터/핀터레스트 링크").setRequired(false))
     .addAttachmentOption(opt => opt.setName("파일").setDescription("변환할 mp4 또는 이미지 파일").setRequired(false))
