@@ -2,7 +2,10 @@ import { SlashCommandBuilder } from "discord.js";
 import { getVoiceConnection } from "@discordjs/voice";
 
 export default {
-  data: new SlashCommandBuilder().setName("퇴장").setDescription("미디를 음챗에서 내보냄!"),
+  data: new SlashCommandBuilder()
+    .setName("leave")
+    .setNameLocalizations({ ko: "퇴장" })
+    .setDescription("미디를 음챗에서 내보냄!"),
   async execute(interaction) {
     const connection = getVoiceConnection(interaction.guild.id);
     if (!connection)
